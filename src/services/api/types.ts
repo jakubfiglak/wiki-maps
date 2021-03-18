@@ -1,3 +1,11 @@
+import { Coords } from 'google-map-react';
+
+export type GetArticlesArgs = {
+  coords: Coords;
+  radius?: number;
+  limit?: number;
+};
+
 type Article = {
   dist: number;
   lat: number;

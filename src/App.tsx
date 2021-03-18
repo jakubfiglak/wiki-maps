@@ -1,8 +1,8 @@
-import { Page } from './components/Page';
+import { MapPage } from './pages/map';
 import './App.css';
 
 function App() {
-  return <Page />;
+  return <MapPage />;
 }
 
 export default App;
