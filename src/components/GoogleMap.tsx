@@ -1,21 +1,34 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import GoogleMapReact, { Coords } from 'google-map-react';
 import { Marker } from './Marker';
 import { emit } from '../pages/map/mediator';
 import { useMapStore } from '../pages/map/store';
 
-const poznanPosition: Coords = {
-  lat: 52.4006164,
-  lng: 16.6214907,
+const losAngelesPosition: Coords = {
+  lat: 34.052235,
+  lng: -118.243683,
 };
 
 const defaultZoom = 10;
 
 export function GoogleMap() {
+  const [userLocation, setUserLocation] = useState(losAngelesPosition);
+
   const [{ markers }] = useMapStore();
 
   useEffect(() => {
-    emit('mapLoaded', poznanPosition);
+    emit('mapLoaded', userLocation);
+  }, [userLocation]);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) =>
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }),
+      (error) => console.error(error)
+    );
   }, []);
 
   return (
@@ -24,7 +37,8 @@ export function GoogleMap() {
         bootstrapURLKeys={{
           key: process.env.REACT_APP_GOOGLE_API_KEY as string,
         }}
-        defaultCenter={poznanPosition}
+        defaultCenter={losAngelesPosition}
+        center={userLocation}
         defaultZoom={defaultZoom}
         onChange={(e) => emit('mapDragged', e.center)}
       >
