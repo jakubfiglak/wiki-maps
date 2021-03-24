@@ -7,12 +7,14 @@ defaults.mutator = (currentState, producer) => produce(currentState, producer);
 
 type State = {
   readonly markers: Marker[];
+  readonly googleApiLoaded: boolean;
 };
 
 type Actions = typeof actions;
 
 const initialState: State = {
   markers: [],
+  googleApiLoaded: false,
 };
 
 const actions = {
@@ -28,6 +30,15 @@ const actions = {
 
     setState((draft: Draft<State>) => {
       draft.markers.push(...newMarkers);
+    });
+  },
+
+  setGoogleApiLoaded: (value: boolean): Action<State> => ({
+    getState,
+    setState,
+  }) => {
+    setState((draft: Draft<State>) => {
+      draft.googleApiLoaded = value;
     });
   },
 };

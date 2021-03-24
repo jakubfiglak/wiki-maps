@@ -17,10 +17,6 @@ export function GoogleMap() {
   const [{ markers }] = useMapStore();
 
   useEffect(() => {
-    emit('mapLoaded', userLocation);
-  }, [userLocation]);
-
-  useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) =>
         setUserLocation({
@@ -36,11 +32,15 @@ export function GoogleMap() {
       <GoogleMapReact
         bootstrapURLKeys={{
           key: process.env.REACT_APP_GOOGLE_API_KEY as string,
+          libraries: ['places'],
         }}
         defaultCenter={losAngelesPosition}
         center={userLocation}
         defaultZoom={defaultZoom}
+        // TODO: check if correct Map's event is being used
         onChange={(e) => emit('mapDragged', e.center)}
+        yesIWantToUseGoogleMapApiInternals
+        onGoogleApiLoaded={({ map, maps }) => emit('mapLoaded', map)}
       >
         {markers.map((marker) => (
           <Marker key={marker.pageid} lat={marker.lat} lng={marker.lng} />

@@ -3,14 +3,17 @@ import { useMapStore } from './store';
 import WikipediaApi from '../../services/api/wikipedia';
 import { Marker, WikiArticle } from '../../types';
 
-type Event = 'mapDragged' | 'mapLoaded';
-type ListenerFn = (...args: Array<Coords>) => void;
+type Event = 'mapDragged' | 'mapLoaded' | 'searchBoxPlacesSelected';
+type ListenerFn = (...args: Array<any>) => void;
 type Listeners = Record<Event, ListenerFn>;
 
 const listeners: Listeners = {
   mapDragged: () => null,
   mapLoaded: () => null,
+  searchBoxPlacesSelected: () => null,
 };
+
+let map: any;
 
 export function emit(eventName: Event, ...args: Parameters<ListenerFn>) {
   const listener = listeners[eventName];
@@ -30,7 +33,7 @@ function mapWikipediaArticlesToMarkers(articles: WikiArticle[]): Marker[] {
 }
 
 function useMapMediator() {
-  const [, { addMarkers }] = useMapStore();
+  const [, { addMarkers, setGoogleApiLoaded }] = useMapStore();
 
   async function mapDragged(center: Coords) {
     const response = await WikipediaApi.getArticles({
@@ -41,14 +44,22 @@ function useMapMediator() {
     addMarkers(articles);
   }
 
-  async function mapLoaded(center: Coords) {
-    const response = await WikipediaApi.getArticles({ coords: center });
-    const articles = mapWikipediaArticlesToMarkers(response.query.geosearch);
-    addMarkers(articles);
+  async function mapLoaded(mapInstance: any) {
+    map = mapInstance;
+    console.log(map);
+    setGoogleApiLoaded(true);
+    // const response = await WikipediaApi.getArticles({ coords: center });
+    // const articles = mapWikipediaArticlesToMarkers(response.query.geosearch);
+    // addMarkers(articles);
+  }
+
+  function searchBoxPlacesSelected(position: Coords) {
+    map.setCenter(position);
   }
 
   attachListener('mapDragged', mapDragged);
   attachListener('mapLoaded', mapLoaded);
+  attachListener('searchBoxPlacesSelected', searchBoxPlacesSelected);
 }
 
 export default function MapMediator() {
