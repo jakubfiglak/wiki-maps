@@ -10,4 +10,4 @@ export type WikiArticle = {
   title: string;
 };
 
-export type Marker = Coords & { pageid: number };
+export type Marker = Coords & { pageid: number; title: string };

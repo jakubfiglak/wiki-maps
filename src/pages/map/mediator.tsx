@@ -25,10 +25,11 @@ function attachListener(eventName: Event, listener: ListenerFn) {
 }
 
 function mapWikipediaArticlesToMarkers(articles: WikiArticle[]): Marker[] {
-  return articles.map(({ lat, lon, pageid }) => ({
+  return articles.map(({ lat, lon, pageid, title }) => ({
     lat,
     lng: lon,
     pageid,
+    title,
   }));
 }
 

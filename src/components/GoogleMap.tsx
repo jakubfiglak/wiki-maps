@@ -43,7 +43,12 @@ export function GoogleMap() {
         onGoogleApiLoaded={({ map, maps }) => emit('mapLoaded', map)}
       >
         {markers.map((marker) => (
-          <Marker key={marker.pageid} lat={marker.lat} lng={marker.lng} />
+          <Marker
+            key={marker.pageid}
+            lat={marker.lat}
+            lng={marker.lng}
+            title={marker.title}
+          />
         ))}
       </GoogleMapReact>
     </div>
