@@ -8,6 +8,11 @@ defaults.mutator = (currentState, producer) => produce(currentState, producer);
 type State = {
   readonly markers: Marker[];
   readonly googleApiLoaded: boolean;
+  readonly isModalVisible: boolean;
+  readonly currentArticle: {
+    url: string;
+    title: string;
+  };
 };
 
 type Actions = typeof actions;
@@ -15,6 +20,11 @@ type Actions = typeof actions;
 const initialState: State = {
   markers: [],
   googleApiLoaded: false,
+  isModalVisible: false,
+  currentArticle: {
+    url: '',
+    title: '',
+  },
 };
 
 const actions = {
@@ -33,12 +43,27 @@ const actions = {
     });
   },
 
-  setGoogleApiLoaded: (value: boolean): Action<State> => ({
-    getState,
-    setState,
-  }) => {
+  setGoogleApiLoaded: (value: boolean): Action<State> => ({ setState }) => {
     setState((draft: Draft<State>) => {
       draft.googleApiLoaded = value;
+    });
+  },
+
+  setModalVisible: (value: boolean): Action<State> => ({ setState }) => {
+    setState((draft: Draft<State>) => {
+      draft.isModalVisible = value;
+    });
+  },
+
+  setCurrentArticle: ({
+    url,
+    title,
+  }: {
+    url: string;
+    title: string;
+  }): Action<State> => ({ setState }) => {
+    setState((draft: Draft<State>) => {
+      draft.currentArticle = { url, title };
     });
   },
 };

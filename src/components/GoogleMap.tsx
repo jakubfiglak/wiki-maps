@@ -48,6 +48,7 @@ export function GoogleMap() {
             lat={marker.lat}
             lng={marker.lng}
             title={marker.title}
+            pageId={marker.pageid}
           />
         ))}
       </GoogleMapReact>

@@ -1,9 +1,13 @@
 import { Coords } from 'google-map-react';
 import { useMapStore } from './store';
 import WikipediaApi from '../../services/api/wikipedia';
-import { Marker, WikiArticle } from '../../types';
+import { Marker, Article } from '../../types';
 
-type Event = 'mapDragged' | 'mapLoaded' | 'searchBoxPlacesSelected';
+type Event =
+  | 'mapDragged'
+  | 'mapLoaded'
+  | 'searchBoxPlacesSelected'
+  | 'markerClicked';
 type ListenerFn = (...args: Array<any>) => void;
 type Listeners = Record<Event, ListenerFn>;
 
@@ -11,6 +15,7 @@ const listeners: Listeners = {
   mapDragged: () => null,
   mapLoaded: () => null,
   searchBoxPlacesSelected: () => null,
+  markerClicked: () => null,
 };
 
 let map: any;
@@ -24,7 +29,7 @@ function attachListener(eventName: Event, listener: ListenerFn) {
   listeners[eventName] = listener;
 }
 
-function mapWikipediaArticlesToMarkers(articles: WikiArticle[]): Marker[] {
+function mapWikipediaArticlesToMarkers(articles: Article[]): Marker[] {
   return articles.map(({ lat, lon, pageid, title }) => ({
     lat,
     lng: lon,
@@ -34,7 +39,10 @@ function mapWikipediaArticlesToMarkers(articles: WikiArticle[]): Marker[] {
 }
 
 function useMapMediator() {
-  const [, { addMarkers, setGoogleApiLoaded }] = useMapStore();
+  const [
+    ,
+    { addMarkers, setGoogleApiLoaded, setModalVisible, setCurrentArticle },
+  ] = useMapStore();
 
   async function mapDragged(center: Coords) {
     const response = await WikipediaApi.getArticles({
@@ -58,9 +66,17 @@ function useMapMediator() {
     map.setCenter(position);
   }
 
+  async function markerClicked(id: number) {
+    const response = await WikipediaApi.getArticle({ id });
+    const { fullurl, title } = response.query.pages[id];
+    setCurrentArticle({ url: fullurl, title });
+    setModalVisible(true);
+  }
+
   attachListener('mapDragged', mapDragged);
   attachListener('mapLoaded', mapLoaded);
   attachListener('searchBoxPlacesSelected', searchBoxPlacesSelected);
+  attachListener('markerClicked', markerClicked);
 }
 
 export default function MapMediator() {

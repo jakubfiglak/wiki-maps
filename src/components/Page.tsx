@@ -2,6 +2,7 @@ import { Layout as AntLayout } from 'antd';
 import styled from 'styled-components';
 import { GoogleMap } from './GoogleMap';
 import { Header } from './Header';
+import { ArticleModal } from './ArticleModal';
 
 const { Content, Footer } = AntLayout;
 
@@ -25,6 +26,7 @@ export function Page() {
       <Header />
       <Inner>
         <GoogleMap />
+        <ArticleModal />
       </Inner>
       <FooterComponent>Netguru College React</FooterComponent>
     </Layout>

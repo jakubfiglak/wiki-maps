@@ -1,28 +1,28 @@
 import ky from 'ky';
 import { Coords } from 'google-map-react';
-import { WikiArticle } from '../../types';
+import { Article, ArticleDetails, WikiResponse } from '../../types';
 
 const client = ky.create({ prefixUrl: 'https://pl.wikipedia.org/w' });
 
-export type GetArticlesArgs = {
+type GetArticlesArgs = {
   coords: Coords;
   radius?: number;
   limit?: number;
 };
 
-export type WikiResponse = {
-  batchcomplete: string;
-  query: {
-    geosearch: WikiArticle[];
-  };
-};
+type GetArticleArgs = { id: number };
+
+type ArticlesResponse = WikiResponse<{ geosearch: Article[] }>;
+type ArticleDetailsResponse = WikiResponse<{
+  pages: Record<string, ArticleDetails>;
+}>;
 
 const api = {
   getArticles({
     coords,
     radius = 10000,
     limit = 10,
-  }: GetArticlesArgs): Promise<WikiResponse> {
+  }: GetArticlesArgs): Promise<ArticlesResponse> {
     const params = {
       action: 'query',
       list: 'geosearch',
@@ -37,6 +37,25 @@ const api = {
           gscoord: `${coords.lat}|${coords.lng}`,
           gsradius: radius,
           gslimit: limit,
+        },
+      })
+      .json();
+  },
+
+  getArticle({ id }: GetArticleArgs): Promise<ArticleDetailsResponse> {
+    const params = {
+      action: 'query',
+      pageids: id,
+      format: 'json',
+      origin: '*',
+      prop: 'info',
+      inprop: 'url',
+    };
+
+    return client
+      .get('api.php?', {
+        searchParams: {
+          ...params,
         },
       })
       .json();
