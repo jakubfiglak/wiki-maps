@@ -13,6 +13,7 @@ export type Article = {
   pageid: number;
   primary: string;
   title: string;
+  color: Color;
 };
 
 export type ArticleDetails = {
@@ -21,4 +22,6 @@ export type ArticleDetails = {
   fullurl: string;
 };
 
-export type Marker = Coords & { pageid: number; title: string };
+export type Color = 'orange' | 'blue';
+
+export type Marker = Coords & { pageid: number; title: string; color: Color };

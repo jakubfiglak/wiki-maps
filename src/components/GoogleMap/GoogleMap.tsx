@@ -44,13 +44,14 @@ export function GoogleMap() {
         onGoogleApiLoaded={({ map, maps }) => emit('mapLoaded', map)}
         options={{ styles: styles.tinia }}
       >
-        {markers.map(({ pageid, lat, lng, title }) => (
+        {markers.map(({ pageid, lat, lng, title, color }) => (
           <Marker
             key={pageid}
             lat={lat}
             lng={lng}
             title={title}
             pageId={pageid}
+            color={color}
           />
         ))}
       </GoogleMapReact>

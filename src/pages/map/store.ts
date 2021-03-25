@@ -1,6 +1,16 @@
 import { createStore, createHook, Action, defaults } from 'react-sweet-state';
 import produce, { Draft } from 'immer';
-import { Marker } from '../../types';
+import { Color, Marker } from '../../types';
+
+type SetCurrentArticleArgs = {
+  url: string;
+  title: string;
+};
+
+type SetMarkerColorArgs = {
+  id: number;
+  color: Color;
+};
 
 defaults.devtools = true;
 defaults.mutator = (currentState, producer) => produce(currentState, producer);
@@ -58,12 +68,20 @@ const actions = {
   setCurrentArticle: ({
     url,
     title,
-  }: {
-    url: string;
-    title: string;
-  }): Action<State> => ({ setState }) => {
+  }: SetCurrentArticleArgs): Action<State> => ({ setState }) => {
     setState((draft: Draft<State>) => {
       draft.currentArticle = { url, title };
+    });
+  },
+
+  setMarkerColor: ({ id, color }: SetMarkerColorArgs): Action<State> => ({
+    setState,
+    getState,
+  }) => {
+    const { markers } = getState();
+    const markerIndex = markers.findIndex((marker) => marker.pageid === id);
+    setState((draft: Draft<State>) => {
+      draft.markers[markerIndex].color = color;
     });
   },
 };
