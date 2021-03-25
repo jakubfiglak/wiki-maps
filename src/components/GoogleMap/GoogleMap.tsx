@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import GoogleMapReact, { Coords } from 'google-map-react';
-import { Marker } from './Marker';
-import { emit } from '../pages/map/mediator';
-import { useMapStore } from '../pages/map/store';
+import { Marker } from '../Marker';
+import { emit } from '../../pages/map/mediator';
+import { useMapStore } from '../../pages/map/store';
+import { styles } from './styles';
 
 const losAngelesPosition: Coords = {
   lat: 34.052235,
@@ -41,14 +42,15 @@ export function GoogleMap() {
         onChange={(e) => emit('mapDragged', e.center)}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => emit('mapLoaded', map)}
+        options={{ styles: styles.tinia }}
       >
-        {markers.map((marker) => (
+        {markers.map(({ pageid, lat, lng, title }) => (
           <Marker
-            key={marker.pageid}
-            lat={marker.lat}
-            lng={marker.lng}
-            title={marker.title}
-            pageId={marker.pageid}
+            key={pageid}
+            lat={lat}
+            lng={lng}
+            title={title}
+            pageId={pageid}
           />
         ))}
       </GoogleMapReact>

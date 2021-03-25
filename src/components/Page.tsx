@@ -1,6 +1,6 @@
 import { Layout as AntLayout } from 'antd';
 import styled from 'styled-components';
-import { GoogleMap } from './GoogleMap';
+import { GoogleMap } from './GoogleMap/GoogleMap';
 import { Header } from './Header';
 import { ArticleModal } from './ArticleModal';
 
