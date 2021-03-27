@@ -36,10 +36,8 @@ export function GoogleMap() {
           libraries: ['places'],
         }}
         defaultCenter={losAngelesPosition}
-        center={userLocation}
         defaultZoom={defaultZoom}
-        // TODO: check if correct Map's event is being used
-        onChange={(e) => emit('mapDragged', e.center)}
+        center={userLocation}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => emit('mapLoaded', map)}
         options={{ styles: styles.tinia }}

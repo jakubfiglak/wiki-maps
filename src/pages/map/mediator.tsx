@@ -3,6 +3,7 @@ import { useMapStore } from './store';
 import WikipediaApi from '../../services/api/wikipedia';
 import ArticlesDatabase from '../../services/ArticlesDatabase';
 import { Marker, Article } from '../../types';
+import debounce from 'p-debounce';
 
 type Event =
   | 'mapDragged'
@@ -19,7 +20,7 @@ const listeners: Listeners = {
   markerClicked: () => null,
 };
 
-let map: any;
+let map: google.maps.Map;
 
 export function emit(eventName: Event, ...args: Parameters<ListenerFn>) {
   const listener = listeners[eventName];
@@ -60,9 +61,9 @@ function useMapMediator() {
     },
   ] = useMapStore();
 
-  async function mapDragged(center: Coords) {
+  async function getArticlesForMapCenter() {
     const response = await WikipediaApi.getArticles({
-      coords: center,
+      coords: map.getCenter().toJSON(),
       limit: 100,
     });
     const articles = mapReadArticles(response.query.geosearch);
@@ -70,13 +71,12 @@ function useMapMediator() {
     addMarkers(markers);
   }
 
-  async function mapLoaded(mapInstance: any) {
+  function mapLoaded(mapInstance: google.maps.Map) {
     map = mapInstance;
-    console.log(map);
+    map.addListener('center_changed', debounce(getArticlesForMapCenter, 500));
+
+    getArticlesForMapCenter();
     setGoogleApiLoaded(true);
-    // const response = await WikipediaApi.getArticles({ coords: center });
-    // const articles = mapWikipediaArticlesToMarkers(response.query.geosearch);
-    // addMarkers(articles);
   }
 
   function searchBoxPlacesSelected(position: Coords) {
@@ -86,13 +86,14 @@ function useMapMediator() {
   async function markerClicked(id: number) {
     const response = await WikipediaApi.getArticle({ id });
     const { fullurl, title } = response.query.pages[id];
+
     setCurrentArticle({ url: fullurl, title });
     setModalVisible(true);
     setMarkerColor({ id, color: 'blue' });
+
     ArticlesDatabase.setArticleAsRead(id);
   }
 
-  attachListener('mapDragged', mapDragged);
   attachListener('mapLoaded', mapLoaded);
   attachListener('searchBoxPlacesSelected', searchBoxPlacesSelected);
   attachListener('markerClicked', markerClicked);
