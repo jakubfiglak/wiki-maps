@@ -28,7 +28,7 @@ function ArticlesDatabase() {
     const existingArticle = articles.find((art) => art.id === article.id);
     if (!existingArticle) {
       try {
-        articles.push(article);
+        articles.unshift(article);
         localStorage.setItem(articlesKey, JSON.stringify(articles));
       } catch (e) {
         console.error('Error while adding article to localStorage', e);
