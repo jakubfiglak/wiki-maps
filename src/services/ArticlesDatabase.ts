@@ -1,7 +1,7 @@
 const articlesKey = 'articles';
 
 function ArticlesDatabase() {
-  let articles = getArticles();
+  let articles: number[] = getArticles();
 
   function getArticles() {
     try {
@@ -36,6 +36,7 @@ function ArticlesDatabase() {
     setArticleAsRead(id: number) {
       addArticle(id);
     },
+    articles,
   };
 
   return api;

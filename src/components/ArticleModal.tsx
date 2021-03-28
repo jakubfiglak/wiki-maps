@@ -29,7 +29,7 @@ export function ArticleModal() {
         width="100%"
         height="100%"
         style={{ border: 'none' }}
-      ></iframe>
+      />
     </Modal>
   );
 }

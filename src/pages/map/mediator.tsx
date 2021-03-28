@@ -5,16 +5,11 @@ import ArticlesDatabase from '../../services/ArticlesDatabase';
 import { Marker, Article } from '../../types';
 import debounce from 'p-debounce';
 
-type Event =
-  | 'mapDragged'
-  | 'mapLoaded'
-  | 'searchBoxPlacesSelected'
-  | 'markerClicked';
+type Event = 'mapLoaded' | 'searchBoxPlacesSelected' | 'markerClicked';
 type ListenerFn = (...args: Array<any>) => void;
 type Listeners = Record<Event, ListenerFn>;
 
 const listeners: Listeners = {
-  mapDragged: () => null,
   mapLoaded: () => null,
   searchBoxPlacesSelected: () => null,
   markerClicked: () => null,
