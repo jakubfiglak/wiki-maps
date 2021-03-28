@@ -76,6 +76,7 @@ function useMapMediator() {
 
   function placeSelected(position: Coords) {
     map.setCenter(position);
+    map.setZoom(15);
   }
 
   function getReadArticleData(id: number): DBArticle {

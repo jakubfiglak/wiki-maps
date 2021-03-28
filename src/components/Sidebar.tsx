@@ -45,12 +45,13 @@ export function Sidebar() {
               <List.Item.Meta
                 avatar={
                   <Button
-                    onClick={() =>
+                    onClick={() => {
                       emit('placeSelected', {
                         lat: item.coords.lat,
                         lng: item.coords.lng,
-                      })
-                    }
+                      });
+                      setSidebarOpen(false);
+                    }}
                     shape="circle"
                     type="primary"
                     icon={<PushpinOutlined />}
