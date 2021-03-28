@@ -25,11 +25,14 @@ function ArticlesDatabase() {
   }
 
   function addArticle(article: DBArticle) {
-    try {
-      articles.push(article);
-      localStorage.setItem(articlesKey, JSON.stringify(articles));
-    } catch (e) {
-      console.error('Error while adding article to localStorage', e);
+    const existingArticle = articles.find((art) => art.id === article.id);
+    if (!existingArticle) {
+      try {
+        articles.push(article);
+        localStorage.setItem(articlesKey, JSON.stringify(articles));
+      } catch (e) {
+        console.error('Error while adding article to localStorage', e);
+      }
     }
   }
 
