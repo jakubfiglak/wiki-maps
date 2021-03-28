@@ -1,7 +1,8 @@
-import { Drawer, Button } from 'antd';
-import { DoubleRightOutlined } from '@ant-design/icons';
+import { Drawer, Button, List } from 'antd';
+import { DoubleRightOutlined, PushpinOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useMapStore } from '../pages/map/store';
+import { emit } from '../pages/map/mediator';
 import ArticlesDatabase from '../services/ArticlesDatabase';
 
 const Container = styled.aside`
@@ -36,9 +37,31 @@ export function Sidebar() {
         onClose={() => setSidebarOpen(false)}
         visible={isSidebarOpen}
       >
-        {ArticlesDatabase.articles.map((article) => (
-          <p>{article}</p>
-        ))}
+        <List
+          itemLayout="horizontal"
+          dataSource={ArticlesDatabase.articles}
+          renderItem={(item) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <Button
+                    onClick={() =>
+                      emit('placeSelected', {
+                        lat: item.coords.lat,
+                        lng: item.coords.lng,
+                      })
+                    }
+                    shape="circle"
+                    type="primary"
+                    icon={<PushpinOutlined />}
+                  />
+                }
+                title={item.title}
+                description={`Visited: ${item.readDate}`}
+              />
+            </List.Item>
+          )}
+        />
       </Drawer>
     </Container>
   );

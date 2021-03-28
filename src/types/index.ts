@@ -25,3 +25,10 @@ export type ArticleDetails = {
 export type Color = 'orange' | 'blue';
 
 export type Marker = Coords & { pageid: number; title: string; color: Color };
+
+export type DBArticle = {
+  id: number;
+  coords: Coords;
+  title: string;
+  readDate: string;
+};

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Tooltip } from 'antd';
 import { emit } from '../pages/map/mediator';
-import { Color } from '../types/index';
+import { Color } from '../types';
 
 type CircleProps = { color: Color };
 type MarkerProps = {
