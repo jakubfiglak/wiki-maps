@@ -19,6 +19,7 @@ type State = {
   readonly markers: Marker[];
   readonly googleApiLoaded: boolean;
   readonly isModalVisible: boolean;
+  readonly isSidebarOpen: boolean;
   readonly currentArticle: {
     url: string;
     title: string;
@@ -31,6 +32,7 @@ const initialState: State = {
   markers: [],
   googleApiLoaded: false,
   isModalVisible: false,
+  isSidebarOpen: false,
   currentArticle: {
     url: '',
     title: '',
@@ -62,6 +64,12 @@ const actions = {
   setModalVisible: (value: boolean): Action<State> => ({ setState }) => {
     setState((draft: Draft<State>) => {
       draft.isModalVisible = value;
+    });
+  },
+
+  setSidebarOpen: (value: boolean): Action<State> => ({ setState }) => {
+    setState((draft: Draft<State>) => {
+      draft.isSidebarOpen = value;
     });
   },
 

@@ -3,17 +3,12 @@ import styled from 'styled-components';
 import { GoogleMap } from './GoogleMap/GoogleMap';
 import { Header } from './Header';
 import { ArticleModal } from './ArticleModal';
+import { Sidebar } from './Sidebar';
 
 const { Content, Footer } = AntLayout;
 
-const Inner = styled(Content)`
-  min-height: 280px;
-  padding: 0;
-  background: #fff;
-`;
-
 const Layout = styled(AntLayout)`
-  min-height: 100vh;
+  height: 100vh;
 `;
 
 const FooterComponent = styled(Footer)`
@@ -24,10 +19,11 @@ export function Page() {
   return (
     <Layout>
       <Header />
-      <Inner>
+      <Content>
         <GoogleMap />
+        <Sidebar />
         <ArticleModal />
-      </Inner>
+      </Content>
       <FooterComponent>Netguru College React</FooterComponent>
     </Layout>
   );

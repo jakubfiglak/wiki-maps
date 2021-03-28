@@ -35,7 +35,7 @@ export function Header() {
         const selectedPlace = searchBox.getPlaces()[0];
         const location = selectedPlace.geometry?.location.toJSON();
         if (location) {
-          emit('searchBoxPlacesSelected', location);
+          emit('placeSelected', location);
         }
       });
     }

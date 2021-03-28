@@ -2,21 +2,16 @@ import { Coords } from 'google-map-react';
 import { useMapStore } from './store';
 import WikipediaApi from '../../services/api/wikipedia';
 import ArticlesDatabase from '../../services/ArticlesDatabase';
-import { Marker, Article } from '../../types';
+import { Marker, Article, DBArticle } from '../../types';
 import debounce from 'p-debounce';
 
-type Event =
-  | 'mapDragged'
-  | 'mapLoaded'
-  | 'searchBoxPlacesSelected'
-  | 'markerClicked';
+type Event = 'mapLoaded' | 'placeSelected' | 'markerClicked';
 type ListenerFn = (...args: Array<any>) => void;
 type Listeners = Record<Event, ListenerFn>;
 
 const listeners: Listeners = {
-  mapDragged: () => null,
   mapLoaded: () => null,
-  searchBoxPlacesSelected: () => null,
+  placeSelected: () => null,
   markerClicked: () => null,
 };
 
@@ -51,7 +46,7 @@ function mapReadArticles(articles: Article[]): Article[] {
 
 function useMapMediator() {
   const [
-    ,
+    { markers },
     {
       addMarkers,
       setGoogleApiLoaded,
@@ -79,8 +74,19 @@ function useMapMediator() {
     setGoogleApiLoaded(true);
   }
 
-  function searchBoxPlacesSelected(position: Coords) {
+  function placeSelected(position: Coords) {
     map.setCenter(position);
+  }
+
+  function getReadArticleData(id: number): DBArticle {
+    const marker = markers.find((mark) => mark.pageid === id)!;
+    const { pageid, title, lat, lng } = marker;
+    return {
+      id: pageid,
+      title,
+      coords: { lat, lng },
+      readDate: new Date().toLocaleString(),
+    };
   }
 
   async function markerClicked(id: number) {
@@ -91,11 +97,11 @@ function useMapMediator() {
     setModalVisible(true);
     setMarkerColor({ id, color: 'blue' });
 
-    ArticlesDatabase.setArticleAsRead(id);
+    ArticlesDatabase.setArticleAsRead(getReadArticleData(id));
   }
 
   attachListener('mapLoaded', mapLoaded);
-  attachListener('searchBoxPlacesSelected', searchBoxPlacesSelected);
+  attachListener('placeSelected', placeSelected);
   attachListener('markerClicked', markerClicked);
 }
 

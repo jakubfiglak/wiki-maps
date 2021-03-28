@@ -1,14 +1,21 @@
+import { DBArticle } from '../types';
+
 const articlesKey = 'articles';
 
 function ArticlesDatabase() {
-  let articles = getArticles();
+  let articles: DBArticle[] = [];
+
+  const localStorageArticles = getArticles();
+  if (localStorageArticles) {
+    articles = localStorageArticles;
+  }
 
   function getArticles() {
     try {
       const articles = localStorage.getItem(articlesKey);
 
       if (articles) {
-        return JSON.parse(articles);
+        return JSON.parse(articles) as DBArticle[];
       } else {
         return [];
       }
@@ -17,25 +24,30 @@ function ArticlesDatabase() {
     }
   }
 
-  function addArticle(id: number) {
-    try {
-      articles.push(id);
-      localStorage.setItem(articlesKey, JSON.stringify(articles));
-    } catch (e) {
-      console.error('Error while adding article to localStorage', e);
+  function addArticle(article: DBArticle) {
+    const existingArticle = articles.find((art) => art.id === article.id);
+    if (!existingArticle) {
+      try {
+        articles.push(article);
+        localStorage.setItem(articlesKey, JSON.stringify(articles));
+      } catch (e) {
+        console.error('Error while adding article to localStorage', e);
+      }
     }
   }
 
   const api = {
-    refresh() {
-      articles = getArticles();
-    },
     isArticleRead(id: number): boolean {
-      return articles.includes(id);
+      const article = articles.find((article) => article.id === id);
+      if (article) {
+        return true;
+      }
+      return false;
     },
-    setArticleAsRead(id: number) {
-      addArticle(id);
+    setArticleAsRead(article: DBArticle) {
+      addArticle(article);
     },
+    articles,
   };
 
   return api;
